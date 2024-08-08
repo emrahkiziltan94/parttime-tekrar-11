@@ -1,14 +1,16 @@
 import { Route, Redirect } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 export default function PrivateRoute({ children, ...rest }) {
   //const { isUserLoggedIn } = useAuth();
+  const { value } = useLocalStorage('token', null);
 
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        isUserLoggedIn ? (
+        value ? (
           children
         ) : (
           <Redirect

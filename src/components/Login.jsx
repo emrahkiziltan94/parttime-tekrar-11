@@ -2,10 +2,14 @@ import { useForm } from 'react-hook-form';
 
 import { login } from '../services/LoginService';
 
+import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useHistory } from 'react-router-dom';
+
 const initialForm = {
   username: '',
   password: '',
 };
+
 
 function Login() {
   const {
@@ -14,9 +18,19 @@ function Login() {
     formState: { errors, isSubmitting },
   } = useForm({ defaultValues: initialForm, mode: 'onChange' });
 
+
+  const history = useHistory();
+
+  const { changeValue: setToken } = useLocalStorage('token', null);
+
   const onSubmit = async (data) => {
     console.log('--- onsubmit data: ', data);
-    login(data);
+
+    const response = await login(data);
+
+    setToken(response.data.token);
+    history.push('/products');
+
   };
 
   return (
